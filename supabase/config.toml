@@ -35,6 +35,18 @@ enable_confirmations = false
 enable_signup = true
 enable_confirmations = false
 
+# The deployed Munda app only needs the HTTP gateway. Keep local dashboard,
+# mail, and analytics services off the host entirely; they are not part of the
+# supported self-hosted surface.
+[studio]
+enabled = false
+
+[inbucket]
+enabled = false
+
+[analytics]
+enabled = false
+
 [functions.discord-interactions]
 entrypoint = "./edge-functions/discord-interactions/index.ts"
 verify_jwt = false
