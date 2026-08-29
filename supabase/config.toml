@@ -23,6 +23,18 @@ sql_paths = [
   "./seed.sql"
 ]
 
+# Local self-host defaults. These affect only the Supabase CLI project and do
+# not change hosted authentication settings.
+[auth]
+enabled = true
+site_url = "http://localhost:19097"
+enable_signup = true
+enable_confirmations = false
+
+[auth.email]
+enable_signup = true
+enable_confirmations = false
+
 [functions.discord-interactions]
 entrypoint = "./edge-functions/discord-interactions/index.ts"
 verify_jwt = false
