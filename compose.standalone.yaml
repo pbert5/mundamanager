@@ -37,5 +37,17 @@ services:
       TURNSTILE_SECRET_KEY: "${TURNSTILE_SECRET_KEY:-1x0000000000000000000000000000000AA}"
     command: ["sh", "-c", "if [ -f /runtime/.env.standalone ]; then . /runtime/.env.standalone; export NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_ANON_KEY; fi; exec node server.js"]
 
+  chrome-devtools-mcp:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.chrome-devtools-mcp
+    profiles: ["development-tools"]
+    init: true
+    stdin_open: true
+    tty: false
+    shm_size: 1gb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 volumes:
   standalone-runtime:

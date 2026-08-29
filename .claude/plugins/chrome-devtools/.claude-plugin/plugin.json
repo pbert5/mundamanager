@@ -1,0 +1,1 @@
+{"$schema":"https://anthropic.com/claude-code/plugin.schema.json","name":"munda-chrome-devtools","version":"0.1.0","description":"Compose Chrome DevTools MCP for Munda acceptance","author":{"name":"Warhammer project"}}
