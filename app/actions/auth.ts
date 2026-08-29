@@ -33,7 +33,7 @@ export const signUpAction = async (formData: FormData) => {
     // Check if email is already registered before signUp to prevent confirmation email.
     // We use a direct GoTrue API call with the filter param since the JS client
     // doesn't expose email filtering on listUsers, and fetching all users won't scale.
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseUrl = process.env.MUNDA_SUPABASE_INTERNAL_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
     const userLookup = await fetch(
       `${supabaseUrl}/auth/v1/admin/users?filter=${encodeURIComponent(email)}&per_page=1`,
