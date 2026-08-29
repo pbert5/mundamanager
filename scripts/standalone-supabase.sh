@@ -16,7 +16,7 @@ if [ -z "$api_url" ] || [ -z "$anon_key" ]; then
 fi
 
 umask 077
-cat > .env.standalone <<EOF
+cat > /runtime/.env.standalone <<EOF
 NEXT_PUBLIC_SUPABASE_URL=$api_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=$anon_key
 EOF

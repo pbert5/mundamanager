@@ -9,24 +9,33 @@ services:
     volumes:
       - .:/workspace
       - /var/run/docker.sock:/var/run/docker.sock
+      - standalone-runtime:/runtime
     command: ["/workspace/scripts/standalone-supabase.sh"]
 
   app:
     build:
       context: .
       dockerfile: Dockerfile.standalone
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: "${NEXT_PUBLIC_SUPABASE_URL:-http://127.0.0.1:54321}"
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: "${NEXT_PUBLIC_SUPABASE_ANON_KEY:-local-anon-key}"
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: "${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-1x00000000000000000000AA}"
     network_mode: host
-    working_dir: /workspace
     depends_on:
       supabase:
         condition: service_completed_successfully
     volumes:
-      - .:/workspace
-      - standalone_node_modules:/workspace/node_modules
+      - standalone-runtime:/runtime
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: "1"
-    command: ["/workspace/scripts/standalone-app.sh"]
+      PORT: "${MUNDA_PORT:-19097}"
+      NEXT_PUBLIC_APP_URL: "${NEXT_PUBLIC_APP_URL:-http://127.0.0.1:19097}"
+      NEXT_PUBLIC_SUPABASE_URL: "${NEXT_PUBLIC_SUPABASE_URL:-http://127.0.0.1:54321}"
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: "${NEXT_PUBLIC_SUPABASE_ANON_KEY:-local-anon-key}"
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-1x00000000000000000000AA}"
+      TURNSTILE_SECRET_KEY: "${TURNSTILE_SECRET_KEY:-1x0000000000000000000000000000000AA}"
+    command: ["sh", "-c", "if [ -f /runtime/.env.standalone ]; then . /runtime/.env.standalone; export NEXT_PUBLIC_SUPABASE_URL NEXT_PUBLIC_SUPABASE_ANON_KEY; fi; exec node server.js"]
 
 volumes:
-  standalone_node_modules:
+  standalone-runtime:
