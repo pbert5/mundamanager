@@ -1,3 +1,6 @@
+# Keep this stack's Docker resources distinct from any other Munda checkout.
+project_id = "mundamanager-standalone"
+
 [db]
 major_version = 17
 

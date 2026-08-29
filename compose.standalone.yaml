@@ -1,0 +1,32 @@
+services:
+  supabase:
+    build:
+      context: .
+      dockerfile: Dockerfile.supabase-cli
+    entrypoint: ["/bin/sh"]
+    network_mode: host
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["/workspace/scripts/standalone-supabase.sh"]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.standalone
+    network_mode: host
+    working_dir: /workspace
+    depends_on:
+      supabase:
+        condition: service_completed_successfully
+    volumes:
+      - .:/workspace
+      - standalone_node_modules:/workspace/node_modules
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+    command: ["/workspace/scripts/standalone-app.sh"]
+
+volumes:
+  standalone_node_modules:

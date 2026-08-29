@@ -83,10 +83,51 @@ For questions about contributing, feel free to ask in our [Discord server](https
    The Supabase DB schema can be accessed through https://supabase-schema.vercel.app/
    Use the Supabase URL and the and the anon key to connect to it
 
-### Setting up a local Supabase database
+### Standalone local startup with Docker Compose
 
-Run the whole stack locally with the Supabase CLI so you can experiment with
-schema/backend changes without touching the production database.
+Run Munda Manager and a fresh local Supabase stack without relying on a parent
+repository, host Node installation, or hosted Supabase project. This flow is
+supported on Linux because both Compose services use the host network: the
+Supabase CLI creates its own Docker containers and the app reaches them at
+`127.0.0.1:54321`.
+
+**Prerequisites:** Docker Engine with the Compose plugin, and a checkout of
+this repository. The Docker daemon must be reachable through
+`/var/run/docker.sock`.
+
+1. Copy the environment example and add any app-specific values you need:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Start the complete standalone stack:
+   ```bash
+   docker compose -f compose.standalone.yaml up --build
+   ```
+3. Open [http://127.0.0.1:3000](http://127.0.0.1:3000). The Supabase CLI
+   service starts first, builds the committed schema and seed data, and writes
+   its generated local URL and anon key to the ignored `.env.standalone` file.
+
+Stop the app with `Ctrl-C`, then stop and remove the local containers with:
+```bash
+docker compose -f compose.standalone.yaml down
+```
+
+To rebuild the local database, run the same startup command after `down`; for
+an explicit destructive reset while the stack is running, use:
+```bash
+docker compose -f compose.standalone.yaml run --rm supabase supabase db reset --workdir /workspace
+```
+
+The Compose wrapper builds the pinned Supabase CLI in a small helper image and
+mounts the Docker socket because `supabase start` manages
+the database/API containers itself; it does not expose additional host ports
+and does not use any parent-repository files.
+
+### Manual local Supabase development
+
+The standalone Compose flow above is the supported startup path. If you already
+have the Supabase CLI and Node installed, the underlying commands are still
+available for incremental development:
 
 > **Why are local migrations disabled in config.toml?**
 > The files in `supabase/migrations/` are *incremental* deltas for developers
