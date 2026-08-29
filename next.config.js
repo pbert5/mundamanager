@@ -6,6 +6,8 @@ const useRedisCache = process.env.USE_REDIS_CACHE === 'true'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The parent deployment runs the production server from a standalone image.
+  output: 'standalone',
   ...(useRedisCache
     ? {
         cacheHandler: fileURLToPath(new URL('./cache-handler.js', import.meta.url)),
