@@ -1,7 +1,8 @@
 import { invalidateUser, invalidatePatreonSupporters } from '@/utils/cache-tags';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createClient as createAuthClient } from "@/utils/supabase/server";
+import { createServiceRoleClient, createClient as createAuthClient } from '@/utils/supabase/server';
+import { getSupabaseServerUrl } from '@/utils/supabase/server-url';
 import { checkAdmin } from "@/utils/auth";
 
 /**
@@ -53,22 +54,6 @@ interface DatabaseUserData {
   tierTitle: string | null;
   tierId: string | null;
   discordRoles: string[] | null;
-}
-
-/**
- * Create service role Supabase client for admin operations
- */
-function createServiceRoleClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    }
-  );
 }
 
 /**
@@ -487,7 +472,7 @@ export async function POST(request: NextRequest) {
         // Handle bearer token
         const bearerToken = authHeader.replace('Bearer ', '');
         const supabase = createClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          getSupabaseServerUrl()!,
           process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
           {
             global: {

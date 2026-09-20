@@ -1,5 +1,6 @@
 import { TAGS } from '@/utils/cache-tags';
 import { createClient } from '@supabase/supabase-js';
+import { getSupabaseServerUrl } from '@/utils/supabase/server-url';
 import { unstable_cache } from 'next/cache';
 
 /**
@@ -14,7 +15,7 @@ import { unstable_cache } from 'next/cache';
 const getCachedUserCount = unstable_cache(
   async () => {
     const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      getSupabaseServerUrl()!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
