@@ -8,6 +8,7 @@ import { getPatreonTierConfig } from '@/utils/patreon';
 import { PatreonSupporterIcon } from '@/components/ui/patreon-supporter-icon';
 import { createClient } from '@supabase/supabase-js';
 import { unstable_cache } from 'next/cache';
+import { getSupabaseServerUrl } from '@/utils/supabase/server-url';
 
 const defaultUrl = process.env.NODE_ENV === 'development'
   ? "http://localhost:3000"
@@ -51,7 +52,7 @@ export default async function ContributorsPage() {
     async () => {
       // Use anon key for static generation (RLS controls access)
       const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        getSupabaseServerUrl()!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
       
